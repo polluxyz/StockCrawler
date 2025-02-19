@@ -1,0 +1,7 @@
+__pycache__
+.vscode
+build
+Crawler_venv
+dist
+stock_data
+total_date

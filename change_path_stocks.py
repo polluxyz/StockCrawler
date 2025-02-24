@@ -5,9 +5,11 @@ from pathlib import Path
 from datetime import date
 import time
 
+
 def sanitize_filename(filename):
     # Windows 不允許的字符: < > : " / \ | ? *
-    return ''.join(c for c in filename if c not in '<>:"/\\|?*')
+    return "".join(c for c in filename if c not in '<>:"/\\|?*')
+
 
 def date_info(stock_date, stock_no, stock_name, types):
     # 證交所最早的資料(民國99年)
@@ -19,22 +21,28 @@ def date_info(stock_date, stock_no, stock_name, types):
     end_year = today.year
     end_month = today.month
 
-    for Y in range(start_year, end_year+1):
+    for Y in range(start_year, end_year + 1):
         ST_M = start_month if Y == start_year & int(stock_date[:4]) >= 2010 else 1
         ED_M = end_month if Y == end_year else 12
-        for M in range(ST_M, ED_M+1):
+        for M in range(ST_M, ED_M + 1):
             string_M = "{:02}".format(M)
             move_file(stock_no, stock_name, types, Y, string_M)
+
 
 def balance_sheet(stock_no, stock_name, types):
     for Y in range(102, 114):
         ED_S = 1 if Y == 113 else 4
-        for S in range(1, ED_S+1):
-            move_file(stock_no, stock_name, types, Y+1911, S)
+        for S in range(1, ED_S + 1):
+            move_file(stock_no, stock_name, types, Y + 1911, S)
+
 
 def move_file(stock_no, stock_name, types, year, season_month):
-    old_path = "./stock_data/{} {}/{}/{}_{}.json".format(stock_no, stock_name, types, year, season_month)
-    new_path = "./stock_data/{}/{} {}/{}_{}.json".format(types, stock_no, stock_name, year, season_month)
+    old_path = "./stock_data/{} {}/{}/{}_{}.json".format(
+        stock_no, stock_name, types, year, season_month
+    )
+    new_path = "./stock_data/{}/{} {}/{}_{}.json".format(
+        types, stock_no, stock_name, year, season_month
+    )
 
     # 移動資料
     if os.path.exists(old_path):
@@ -42,6 +50,7 @@ def move_file(stock_no, stock_name, types, year, season_month):
         shutil.move(old_path, new_path)
     else:
         pass
+
 
 def del_files(stock_no, stock_name, types):
     if types == "":
@@ -54,14 +63,15 @@ def del_files(stock_no, stock_name, types):
     else:
         pass
 
+
 def change_path(types):
-    with open("./Listed_stock_info_list.json","r",encoding="utf-8") as f:
+    with open("./Listed_stock_info_list.json", "r", encoding="utf-8") as f:
         stock_info_list = json.load(f)
 
     for stock_info in stock_info_list["stock"]:
         stock_no = stock_info["stockNo"]
         stock_name = sanitize_filename(stock_info["stockName"])
-        stock_date = stock_info["stockDate"] # 股票上市日期
+        stock_date = stock_info["stockDate"]  # 股票上市日期
 
         if types == "date_info":
             date_info(stock_date, stock_no, stock_name, types)

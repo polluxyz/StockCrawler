@@ -7,17 +7,19 @@ try:
         dbname="stockdb",
         user="postgres",
         password="450041",
-        port="5432"
+        port="5432",
     )
     cur = conn.cursor()
 
     # 創建表格
-    cur.execute("""
+    cur.execute(
+        """
         CREATE TABLE IF NOT EXISTS stock (
             symbol VARCHAR(10) PRIMARY KEY,  -- 股票代號
             name VARCHAR(100) NOT NULL       -- 股票名稱
         );
-    """)
+    """
+    )
 
     conn.commit()
     print("✅ 表格 'stock' 建立成功！")
@@ -26,7 +28,7 @@ except psycopg2.Error as e:
     print("❌ 發生錯誤：", e)
 
 finally:
-    if 'cur' in locals():
+    if "cur" in locals():
         cur.close()
-    if 'conn' in locals():
+    if "conn" in locals():
         conn.close()
